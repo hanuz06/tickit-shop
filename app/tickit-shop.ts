@@ -18,72 +18,61 @@ export class TickitShop {
   }
 
   updateQuality() {
-    for (let i = 0; i < this.items.length; i++) {
-      if (this.items[i].name.includes("Conjured")) {
-        if (this.items[i].quality > 2) {
-          this.items[i].quality = this.items[i].quality - 2;
-        } else {
-          this.items[i].quality = 0;
-        }
-      } else if (
-        this.items[i].name != "Sharp Cheddar" &&
-        this.items[i].name != "Lady Gaga tickets"
-      ) {
-        if (this.items[i].quality > 0) {
-          if (this.items[i].name != "Ping-pong Paddle") {
-            this.items[i].quality = this.items[i].quality - 1;
-          }
-        }
+    for (const item of this.items) {
+      if (item.name == "Ping-pong Paddle") {
       } else {
-        if (this.items[i].quality < 50) {
-          this.items[i].quality = this.items[i].quality + 1;
-          if (this.items[i].name == "Lady Gaga tickets") {
-            if (this.items[i].sellIn < 11) {
-              if (this.items[i].quality < 50) {
-                this.items[i].quality = this.items[i].quality + 1;
-              }
-            }
-            if (this.items[i].sellIn < 6) {
-              if (this.items[i].quality < 50) {
-                this.items[i].quality = this.items[i].quality + 1;
-              }
-            }
+        item.sellIn -= 1;
+      }
+      
+      switch (item.name) {
+        case "Sharp Cheddar":
+          TickitShop.increaseItemQuality(item);
+          if (item.sellIn < 0) {
+            TickitShop.increaseItemQuality(item);
           }
-        }
-      }
-
-      if (this.items[i].name != "Ping-pong Paddle") {
-        this.items[i].sellIn = this.items[i].sellIn - 1;
-      }
-
-      if (this.items[i].sellIn < 0) {
-        if (this.items[i].name != "Sharp Cheddar") {
-          if (this.items[i].name != "Lady Gaga tickets") {
-            if (this.items[i].quality > 0) {
-              if (this.items[i].name != "Ping-pong Paddle") {
-                if (this.items[i].name.includes("Conjured")) {
-                  if (this.items[i].quality > 2) {
-                    this.items[i].quality = this.items[i].quality - 2;
-                  } else {
-                    this.items[i].quality = 0;
-                  }
-                } else {
-                  this.items[i].quality = this.items[i].quality - 1;
-                }
-              }
+          break;
+        case "Lady Gaga tickets":
+          TickitShop.increaseItemQuality(item);
+          if (item.sellIn <= 10) {
+            TickitShop.increaseItemQuality(item);
+          }
+          if (item.sellIn <= 5) {
+            TickitShop.increaseItemQuality(item);
+          }
+          if (item.sellIn < 0) {
+            item.quality = 0;
+          }
+          break;
+        case "Ping-pong Paddle":
+          break;
+        default:
+          if (item.name.includes("Conjured")) {
+            if (item.quality >= 2) {
+              item.quality -= 2;
+            } else {
+              item.quality = 0;
             }
           } else {
-            this.items[i].quality =
-              this.items[i].quality - this.items[i].quality;
+            TickitShop.decreaseItemQuality(item);
+            if (item.sellIn < 0) {
+              TickitShop.decreaseItemQuality(item);
+            }
           }
-        } else {
-          if (this.items[i].quality < 50) {
-            this.items[i].quality = this.items[i].quality + 1;
-          }
-        }
+          break;
       }
     }
-
     return this.items;
+  }
+
+  static increaseItemQuality(item: Item) {
+    if (item.quality < 50) {
+      return (item.quality += 1);
+    }
+  }
+
+  static decreaseItemQuality(item: Item) {
+    if (item.quality > 0) {
+      return (item.quality -= 1);
+    }
   }
 }

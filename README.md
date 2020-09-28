@@ -27,8 +27,7 @@ We have recently signed a supplier of conjured items. This requires an update to
 - "Conjured" items degrade in Quality twice as fast as normal items
 
 Feel free to make any changes to the code and add any 
-new code as long as everything still works correctly. However, do not 
-alter the method signature of the TickitShop 'create'.
+new code as long as everything still works correctly. However, do not alter the method signature of the TickitShop 'create'.
 
 Just for clarification, an item can never have its Quality increase above 50, however "Ping Pong Paddle" is a legendary item and as such its Quality is 80 and it never alters.
 

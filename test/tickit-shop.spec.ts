@@ -135,7 +135,7 @@ describe("TickitShop", () => {
       });
     });
     checkQualityChangesTwiceAsFastWhenConjured({ name: "Parmesan" });
-    checkQualityWillNotIncrease50({ name });
+    checkQualityWillNotExceed50({ name });
   });
 
   describe("Sharp Cheddar", () => {
@@ -164,10 +164,10 @@ describe("TickitShop", () => {
       });
     });
 
-    checkQualityWillNotIncrease50({ name });
+    checkQualityWillNotExceed50({ name });
   });
 
-  function checkQualityWillNotIncrease50({ name }) {
+  function checkQualityWillNotExceed50({ name }) {
     describe("when quality equals 50", () => {
       beforeEach(() => {
         tickitShop = createTickitShop({ name, quality: 50, sellIn: 8 });
@@ -185,9 +185,7 @@ describe("TickitShop", () => {
     quality = 20,
     sellIn = 10,
   }) {
-    const previousQuality = quality;
-
-    describe("when conjured", () => {
+    describe("when conjured and Quality is above 2", () => {
       beforeEach(() => {
         tickitShop = new TickitShop([
           new Item(name, sellIn, quality),
@@ -195,6 +193,7 @@ describe("TickitShop", () => {
         ]);
       });
 
+      const previousQuality = quality;
       const getConjuredItem = () => tickitShop.items[1];
 
       it("degrades in Quality twice as fast", () => {
@@ -203,6 +202,22 @@ describe("TickitShop", () => {
         const conjuredDifferenceInQuality =
           previousQuality - getConjuredItem().quality;
         expect(conjuredDifferenceInQuality).eql(2 * differenceInQuality);
+      });
+    });
+
+    describe("when conjured and Quality equals or less than 2", () => {
+      beforeEach(() => {
+        tickitShop = new TickitShop([
+          new Item(name, sellIn, (quality = 1)),
+          new Item(`Conjured ${name}`, sellIn, (quality = 1)),
+        ]);
+      });
+      const previousQuality = 2;
+      const getConjuredItem = () => tickitShop.items[1];
+
+      it("Quality equals zero", () => {
+        tickitShop.updateQuality();        
+        expect(getConjuredItem().quality).eql(0);
       });
     });
   }
